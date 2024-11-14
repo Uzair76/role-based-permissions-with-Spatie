@@ -38,7 +38,7 @@
                                 <td>{{ $permission->name }}</td>
                                 <td>
                                     @can('update permission')
-                                    <a href="#" class="btn btn-success">Edit</a>
+                                    <a href="{{ url('permissions/'.$permission->id.'/edit') }}" class="btn btn-success">Edit</a>
                                     @endcan
 
                                     @can('delete permission')
