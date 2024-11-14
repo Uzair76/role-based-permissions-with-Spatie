@@ -1,66 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<h1>Spatie Laravel Permission Setup</h1>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<p>Follow these steps to install and configure the Spatie Laravel Permission package.</p>
 
-## About Laravel
+<h2>Installation Steps</h2>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<h3>Step 1: Install the Spatie Package via Composer</h3>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<p>Run the following command to install the package:</p>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+<pre><code>composer require spatie/laravel-permission</code></pre>
 
-## Learning Laravel
+<h3>Step 2: Register the Service Provider (if not auto-registered)</h3>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+<p>The service provider should automatically get registered. If not, manually add it in your <code>config/app.php</code> file:</p>
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+<pre><code>
+'providers' => [
+    // ...
+    Spatie\Permission\PermissionServiceProvider::class,
+];
+</code></pre>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+<h3>Step 3: Publish the Migration and Config Files</h3>
 
-## Laravel Sponsors
+<p>Publish the <code>migrations</code> and the <code>config/permission.php</code> config file with:</p>
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+<pre><code>php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"</code></pre>
 
-### Premium Partners
+<h3>Step 4: Run the Migrations</h3>
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+<p>Run the migrations to set up the necessary database tables:</p>
 
-## Contributing
+<pre><code>php artisan migrate</code></pre>
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<h3>Step 5: Setup the Middleware</h3>
 
-## Code of Conduct
+<p>This package provides <code>RoleMiddleware</code>, <code>PermissionMiddleware</code>, and <code>RoleOrPermissionMiddleware</code>. Follow the instructions below based on your Laravel version:</p>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+<h4>For Laravel 10</h4>
+<p>Add the middleware aliases in your <code>app/Http/Kernel.php</code> file to use them:</p>
 
-## Security Vulnerabilities
+<pre><code>
+// Laravel 10+ uses $middlewareAliases
+protected $middlewareAliases = [
+    // ...
+    'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+    'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+    'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+];
+</code></pre>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+<h4>For Laravel 11</h4>
+<p>In Laravel 11, you can add the middleware directly in <code>bootstrap/app.php</code> as follows:</p>
 
-## License
+<pre><code>
+$middleware->alias([
+    'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+    'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+    'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+]);
+</code></pre>
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<p>Your Spatie Permission package is now ready to use!</p>
+
+<h3>Additional References</h3>
+<ul>
+    <li><a href="https://spatie.be/docs" target="_blank">Spatie Documentation</a></li>
+    <li><a href="https://www.fundaofwebit.com/post/laravel-10-spatie-user-roles-and-permissions-tutorial#google_vignette" target="_blank">Laravel 10 Spatie User Roles and Permissions Tutorial</a></li>
+</ul>
